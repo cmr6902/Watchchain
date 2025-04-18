@@ -2,12 +2,32 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link'
 import { logOut } from '@/backend/Auth';
-import { useStateContext } from '@/context/StateContext';
+import { ethers } from "ethers";
+import { useState } from "react";
 const Navbar = () => {
-  const { user, setUser } = useStateContext()
+  const [walletAddress, setWalletAddress] = useState(null);
 
+  // connect wallet 
+  const connectWallet = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.send("eth_requestAccounts", []);
+        const wallet = accounts[0];
+        setWalletAddress(wallet);
+        setUser(wallet);
+      } 
+      catch (error) {
+        console.error("User denied connection:", error);
+      }
+    } 
+  };
+
+  // disconnect 
+  const disconnectWallet = () => {
+    setWalletAddress(null);
+  };
   return (
-    // {user ?} for when user is signed in
     <Nav role="navigation" aria-label="Main Navigation">
       <NavContainer>
         {/* Logo with Logout Function */}
@@ -18,7 +38,7 @@ const Navbar = () => {
 
         {/* links */}
         <NavMenu>
-          {user ? (
+          {walletAddress ? (
             <>
             <NavItem>
             <NavLink href="/">Home</NavLink>
@@ -27,7 +47,7 @@ const Navbar = () => {
             <NavLink href="/Services">About</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="/myEvents"> Available Watches</NavLink>
+            <NavLink href="/AvaWatches"> Available Watches</NavLink>
           </NavItem>
             </>
           ):(
@@ -45,21 +65,26 @@ const Navbar = () => {
           )}
         </NavMenu>
         <NavLinks>
-          {user ? ( //if logged in
-            <>
-              <LogoutButton onClick={() => logOut(setUser)}>Logout</LogoutButton>
-            </>
-          ) : ( // if not signed in
-            <>
-              <ButtonLink href="/auth/signup">Connect Wallet</ButtonLink>
-              {/* <ButtonLink href="/auth/login">Login</ButtonLink> */}
-            </>
-          )}
+        {walletAddress ? ( // if wallet is connected
+          <>
+            <ConnectButton disabled>
+              Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+            </ConnectButton>
+            <DisconnectButton onClick={disconnectWallet}>
+              Disconnect Wallet
+            </DisconnectButton>
+          </>
+        ) : ( // not connected
+            <ConnectButton onClick={connectWallet}>
+            Connect Wallet
+            </ConnectButton>
+        )}
         </NavLinks>
       </NavContainer>
     </Nav>
   );
 };
+
 
 const Nav = styled.nav`
 width: 100%;
@@ -113,7 +138,26 @@ cursor: pointer;
 }
 `;
 
-const ButtonLink = styled(Link)`
+const ConnectButton = styled.button`
+display: flex;
+align-items: center;
+background: black;
+color: white;
+padding: 10px 20px;
+border: none;
+text-decoration: none;
+border-radius: 10px;
+cursor: pointer;
+margin: 10px;
+
+
+&:hover {
+  background: green;
+  transition: all 0.5s ease;
+}
+`;
+
+const DisconnectButton = styled.button`
 display: flex;
 align-items: center;
 background: black;
