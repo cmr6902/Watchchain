@@ -23,7 +23,7 @@ const Navbar = () => {
     } 
   };
 
-  // disconnect 
+  // disconnect
   const disconnectWallet = () => {
     setWalletAddress(null);
   };
