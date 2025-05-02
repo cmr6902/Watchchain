@@ -29,6 +29,11 @@ export default function AvailableWatches() {
       const totalWatches = await contract.nextId();
       const watchList = [];
 
+      // Check contract balance
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const balance = await provider.getBalance(contract.target);
+      console.log('Contract Balance:', ethers.formatEther(balance), 'tBNB');
+
       // get each watch's details
       for (let i = 0; i < totalWatches; i++) {
         const watchData = await contract.getWatch(i);

@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import contractABI from '@/contract/WatchChainABI.json';
 
 // address of the contract
-const CONTRACT_ADDRESS = '0x8ed2d225ad8da87d9494db59141678032d4c184a';
+const CONTRACT_ADDRESS = '0x12e3b491d1da92c0e7f96c5bf877b5742a5baca5';
 
 export const getContract = async () => {
   if (typeof window.ethereum === 'undefined') {

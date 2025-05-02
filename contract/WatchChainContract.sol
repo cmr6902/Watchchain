@@ -74,7 +74,7 @@ contract WatchMarketplaceEscrow is ReentrancyGuard { // info of watch
     // gives watch data
     function getWatch(uint id) public view returns (
         uint,
-        address,
+        address payable,
         string memory,
         string memory,
         uint,
