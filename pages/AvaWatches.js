@@ -96,7 +96,9 @@ export default function AvailableWatches() {
       }
 
       const contract = await getContract();
-      await contract.buyWatch(id, { value: price });
+      const tx = await contract.buyWatch(id, { value: price });
+      await tx.wait();
+      
       alert('watch bought');
       fetchWatches();
     } catch (error) {
@@ -108,7 +110,9 @@ export default function AvailableWatches() {
   const confirmDelivery = async (id) => {
     try {
       const contract = await getContract();
-      await contract.confirmDelivery(id);
+      const tx = await contract.confirmDelivery(id);
+      await tx.wait();
+      
       alert('funds sent to seller');
       fetchWatches();
     } catch (error) {
