@@ -92,7 +92,7 @@ const WatchPostings = () => {
 const WatchSection = styled.section`
   text-align: center;
   padding: 100px 20px;
-  background-color: black;
+  background-color: #141414;
   width: 100%;
   min-height: 100vh;
   color: white;
@@ -120,7 +120,7 @@ const WatchContainer = styled.div`
 
 const WatchCard = styled.div`
   width: 300px;
-  background: rgba(255, 255, 255, 0.1);
+  background: black;
   padding: 1.5rem;
   border-radius: 15px;
   color: white;
@@ -142,9 +142,6 @@ const WatchImage = styled.div`
     display: block;
     transition: transform 0.3s;
 
-    &:hover {
-      transform: scale(1.05);
-    }
   }
 `;
 
