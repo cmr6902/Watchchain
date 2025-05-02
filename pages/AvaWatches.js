@@ -29,10 +29,9 @@ export default function AvailableWatches() {
       const totalWatches = await contract.nextId();
       const watchList = [];
 
-      // Check contract balance
+      // check contract balance
       const provider = new ethers.BrowserProvider(window.ethereum);
       const balance = await provider.getBalance(contract.target);
-      console.log('Contract Balance:', ethers.formatEther(balance), 'tBNB');
 
       // get each watch's details
       for (let i = 0; i < totalWatches; i++) {
@@ -117,7 +116,6 @@ export default function AvailableWatches() {
       const contract = await getContract();
       const tx = await contract.confirmDelivery(id);
       await tx.wait();
-      
       alert('funds sent to seller');
       fetchWatches();
     } catch (error) {
@@ -156,8 +154,8 @@ export default function AvailableWatches() {
       {/* show all watches */}
       <WatchGrid>
         {watches.length > 0 ? (
-          watches.map((watch) => (
-            <WatchCard key={watch.id}>
+          watches.map((watch, idx) => (
+            <WatchCard key={idx}>
               <h3>{watch.name}</h3>
               <p>{watch.desc}</p>
               <p>Price: {ethers.formatEther(watch.price)} tBNB</p>
@@ -180,7 +178,7 @@ export default function AvailableWatches() {
                 <>
                   <StatusBadge>Available</StatusBadge>
                   <ActionButton onClick={() => buyWatch(watch.id, watch.price)}>
-                    Buy This
+                    Buy Watch
                   </ActionButton>
                 </>
               )}
@@ -197,86 +195,180 @@ export default function AvailableWatches() {
 // make it look nice css
 const PageContainer = styled.div`
   padding: 100px 50px 50px;
+  background: #141414;
+  min-height: 100vh;
+  color: white;
 `;
 
 const Form = styled.form`
-  background: gray;
-  padding: 20px;
-  border-radius: 12px;
+  background: black;
+  padding: 30px;
+  border-radius: 15px;
   margin-bottom: 40px;
+  max-width: 600px;
+  margin: 0 auto 40px;
+
+  h2 {
+    color: white;
+    margin-bottom: 25px;
+    font-size: 28px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 10px;
   margin-bottom: 20px;
-  border: 1px solid gray;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  transition: all 0.3s;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &:focus {
+    border-color: darkblue;
+    background: rgba(255, 255, 255, 0.1);
+  }
 `;
 
 const TextArea = styled.textarea`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 10px;
   margin-bottom: 20px;
-  border: 1px solid gray;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
+  font-size: 16px;
+  min-height: 100px;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  transition: all 0.3s;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &:focus {
+    border-color: darkblue;
+    background: rgba(255, 255, 255, 0.1);
+  }
 `;
 
 const SubmitButton = styled.button`
   background: darkblue;
   color: white;
-  padding: 12px 24px;
+  padding: 15px 30px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 18px;
+  width: 100%;
+  transition: all 0.3s;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 
   &:hover {
     background: green;
+    transform: translateY(-2px);
   }
 `;
 
 const WatchGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const WatchCard = styled.div`
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background:black;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+  }
+
+  h3 {
+    color: white;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
 `;
 
 const ActionButton = styled.button`
-  margin-top: 10px;
-  padding: 10px 20px;
-  background: black;
+  margin-top: 15px;
+  padding: 15px 30px;
+  background: darkblue;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 18px;
+  width: 100%;
+  transition: all 0.3s;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 
   &:hover {
     background: green;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
 const NoWatches = styled.div`
   text-align: center;
-  font-size: 1.2rem;
-  color: gray;
-  padding: 20px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 const StatusBadge = styled.div`
   display: inline-block;
-  padding: 5px 10px;
-  border-radius: 15px;
-  background: ${props => props.sold ? '#ff4444' : '#4CAF50'};
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: ${props => props.sold ? '#dc3545' : '#28a745'};
   color: white;
-  font-size: 0.9rem;
+  font-size: 14px;
+  font-weight: 600;
   margin: 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;

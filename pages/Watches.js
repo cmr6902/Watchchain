@@ -92,14 +92,19 @@ const WatchPostings = () => {
 const WatchSection = styled.section`
   text-align: center;
   padding: 100px 20px;
-  background-color: #141414;
+  background-color: black;
   width: 100%;
+  min-height: 100vh;
+  color: white;
 `;
 
 const Title = styled.h2`
   color: white;
   margin-bottom: 30px;
-  font-size: 4rem;
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
 `;
 
 const WatchContainer = styled.div`
@@ -108,17 +113,18 @@ const WatchContainer = styled.div`
   justify-content: center;
   gap: 2rem;
   min-height: 70vh;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const WatchCard = styled.div`
   width: 300px;
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
-  border-radius: 10px;
-  color: black;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-
+  border-radius: 15px;
+  color: white;
+  
 `;
 
 const WatchImage = styled.div`
@@ -127,12 +133,18 @@ const WatchImage = styled.div`
   overflow: hidden;
   border-radius: 10px;
   margin-bottom: 1rem;
+  
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 `;
 
@@ -140,17 +152,21 @@ const WatchDetails = styled.div`
   h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
+    color: white;
+    font-weight: 600;
   }
 
   p {
     margin-bottom: 0.75rem;
     font-size: 1.1rem;
+    color: white
   }
 `;
 
 const WatchMeta = styled.div`
   .metaBrand {
-    font-weight: bold;
+    font-weight: 600;
+    color: white;
   }
 `;
 
@@ -158,10 +174,11 @@ const CardFeatures = styled.div`
   text-align: left;
 
   des {
-    font-weight: bold;
+    font-weight: 600;
     font-size: 1.2rem;
     display: block;
     margin-bottom: 0.5rem;
+    color: white;
   }
 
   ul {
@@ -172,19 +189,24 @@ const CardFeatures = styled.div`
   li {
     font-size: 1rem;
     margin-top: 0.4rem;
+    color: white;
   }
 `;
 
 const BuyNowButton = styled.button`
   margin-top: 1rem;
   width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+  padding: 15px;
+  font-size: 18px;
   background-color: darkblue;
   color: white;
   border: none;
   border-radius: 8px;
-  transition: background 0.2s ease-in-out;
+  transition: all 0.3s;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+
+
 `;
 
 export default WatchPostings;

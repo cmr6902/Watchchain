@@ -16,7 +16,7 @@ const Hero = ({text}) => {
             <SubheaderAndCTA>
               <SubHeader>Buy their Watches with Crypto</SubHeader>
               <SubHeader>Post and Sell Your Own Watches</SubHeader>
-              <CTAButton href="/">Connect Wallet</CTAButton>
+              <CTAButton href="/Watches">See Sample Watches</CTAButton>
             </SubheaderAndCTA>
           </HeroTextColumn>
 
