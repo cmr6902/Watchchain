@@ -7,10 +7,10 @@ import Navbar from '@/components/Dashboard/Navbar';
 export default function AvailableWatches() {
   // keep track of all the watches
   const [watches, setWatches] = useState([]);
-  const [watchName, setName] = useState(''); 
-  const [desc, setDescription] = useState(''); 
-  const [watchPrice, setPrice] = useState(''); 
-  const [userWallet, setCurrentAccount] = useState(''); 
+  const [watchName, setName] = useState('');
+  const [desc, setDescription] = useState('');
+  const [watchPrice, setPrice] = useState('');
+  const [userWallet, setCurrentAccount] = useState('');
 
   // connect to metamask
   const loadWallet = async () => {
@@ -26,23 +26,23 @@ export default function AvailableWatches() {
   const fetchWatches = async () => {
     try {
       const contract = await getContract();
-      const totalWatches = await contract.nextId(); s
-      const watchList = []; 
+      const totalWatches = await contract.nextId();
+      const watchList = [];
 
       // get each watch's details
       for (let i = 0; i < totalWatches; i++) {
-        const watchData = await contract.getWatch(i); 
+        const watchData = await contract.getWatch(i);
         const [id, seller, name, desc, price, isSold, buyer, fundsReleased] = watchData;
 
         watchList.push({
-          id,
-          seller,
-          name,
-          desc,
-          price,
-          isSold,
-          buyer,
-          fundsReleased,
+          id: id.toString(),
+          seller: seller.toString(),
+          name: name.toString(),
+          desc: desc.toString(),
+          price: price.toString(),
+          isSold: isSold,
+          buyer: buyer.toString(),
+          fundsReleased: fundsReleased
         });
       }
 
@@ -62,7 +62,7 @@ export default function AvailableWatches() {
   const postWatch = async (e) => {
     e.preventDefault();
     if (!userWallet) {
-      alert('gotta connect your wallet first dude');
+      alert('connect your wallet');
       return;
     }
 
@@ -74,8 +74,10 @@ export default function AvailableWatches() {
     try {
       const contract = await getContract();
       const priceInWei = ethers.parseEther(watchPrice);
-      await contract.listWatch(watchName, desc, priceInWei);
-      alert('watch posted!');
+      const tx = await contract.listWatch(watchName, desc, priceInWei);
+      await tx.wait();
+      
+      alert('watch posted');
       setName('');
       setDescription('');
       setPrice('');
@@ -107,7 +109,7 @@ export default function AvailableWatches() {
     try {
       const contract = await getContract();
       await contract.confirmDelivery(id);
-      alert('funds sent to seller!');
+      alert('funds sent to seller');
       fetchWatches();
     } catch (error) {
       alert(`confirmation failed: ${error.message}`);
@@ -144,33 +146,46 @@ export default function AvailableWatches() {
 
       {/* show all watches */}
       <WatchGrid>
-        {watches.map((watch) => (
-          <WatchCard key={watch.id}>
-            <h3>{watch.name}</h3>
-            <p>{watch.desc}</p>
-            <p>Price: {ethers.formatEther(watch.price)} tBNB</p>
-
-            {!watch.isSold && (
-              <ActionButton onClick={() => buyWatch(watch.id, watch.price)}>
-                Buy This
-              </ActionButton>
-            )}
-
-            {watch.isSold &&
-              !watch.fundsReleased &&
-              userWallet.toLowerCase() === watch.buyer.toLowerCase() && (
-                <ActionButton onClick={() => confirmDelivery(watch.id)}>
-                  Got Watch
-                </ActionButton>
+        {watches.length > 0 ? (
+          watches.map((watch) => (
+            <WatchCard key={watch.id}>
+              <h3>{watch.name}</h3>
+              <p>{watch.desc}</p>
+              <p>Price: {ethers.formatEther(watch.price)} tBNB</p>
+              <p>Seller: {watch.seller.slice(0, 6)}...{watch.seller.slice(-4)}</p>
+              
+              {watch.isSold ? (
+                <>
+                  <StatusBadge sold>Sold</StatusBadge>
+                  <p>Buyer: {watch.buyer.slice(0, 6)}...{watch.buyer.slice(-4)}</p>
+                  {!watch.fundsReleased && userWallet.toLowerCase() === watch.buyer.toLowerCase() && (
+                    <ActionButton onClick={() => confirmDelivery(watch.id)}>
+                      Got Watch
+                    </ActionButton>
+                  )}
+                  {watch.fundsReleased && (
+                    <StatusBadge>Funds Released</StatusBadge>
+                  )}
+                </>
+              ) : (
+                <>
+                  <StatusBadge>Available</StatusBadge>
+                  <ActionButton onClick={() => buyWatch(watch.id, watch.price)}>
+                    Buy This
+                  </ActionButton>
+                </>
               )}
-          </WatchCard>
-        ))}
+            </WatchCard>
+          ))
+        ) : (
+          <NoWatches>No watches available</NoWatches>
+        )}
       </WatchGrid>
     </PageContainer>
   );
 }
 
-// make it look nice
+// make it look nice css
 const PageContainer = styled.div`
   padding: 100px 50px 50px;
 `;
@@ -180,7 +195,6 @@ const Form = styled.form`
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 40px;
-  
 `;
 
 const Input = styled.input`
@@ -239,4 +253,21 @@ const ActionButton = styled.button`
   &:hover {
     background: green;
   }
+`;
+
+const NoWatches = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+  color: gray;
+  padding: 20px;
+`;
+
+const StatusBadge = styled.div`
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background: ${props => props.sold ? '#ff4444' : '#4CAF50'};
+  color: white;
+  font-size: 0.9rem;
+  margin: 10px 0;
 `;
